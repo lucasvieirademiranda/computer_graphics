@@ -87,5 +87,13 @@ public abstract class BaseShader implements Disposable{
 		return shaderId;
 	}
 	
+	protected int getUniformLocation(GL4 gl, String name){
+		int location = gl.glGetUniformLocation(mProgramId, name);
+		if(location < 0){
+			throw new GLException("Error location uniform: " + name);
+		}
+		return location;
+	}
+	
 	public abstract void bindAttributes();
 }

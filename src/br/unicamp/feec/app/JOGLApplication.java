@@ -18,6 +18,7 @@ import com.jogamp.opengl.glu.GLU;
 
 import br.unicamp.feec.graphics.geometry.Geometry;
 import br.unicamp.feec.graphics.shader.DefaultShader;
+import br.unicamp.feec.utils.JGLU;
 import br.unicamp.feec.utils.MatrixUtils;
 
 public class JOGLApplication implements GLEventListener{
@@ -31,8 +32,14 @@ public class JOGLApplication implements GLEventListener{
 	public void display(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
 		
-		shader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getIdentityMatrix4x4()));
-		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getIdentityMatrix4x4()));
+		shader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getTransalationMatrix4x4(0, 0, -2)));
+		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
+		shader.setNormalMatrixUniform(MatrixUtils.toPlainMatrix3x3(MatrixUtils.getIdentityMatrix4x4()));
+		shader.setAmbientColorUniform(new float[]{1, 1, 1});
+		shader.setAmbientStrengthUniform(0.1f);
+		shader.setLighPositionUniform(new float[]{0, 0, 10, 1});
+		shader.setLightColorUniform(new float[]{1, 1, 1});
+		shader.setDiffuseColorUniform(new float[]{1, 0, 0, 1});
 		
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
 		
@@ -50,7 +57,8 @@ public class JOGLApplication implements GLEventListener{
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
-		
+
+		gl.glEnable(GL4.GL_DEPTH_TEST);
 		gl.glPolygonMode(GL4.GL_FRONT_AND_BACK, GL4.GL_FILL);
 		
 		String vertexShader = null, fragmentShader = null;
@@ -66,13 +74,54 @@ public class JOGLApplication implements GLEventListener{
 		 shader.init();
 		 shader.use();
 		 
-	    	float[] vertices = {  
-				0.0f, 0.0f, 0.0f, 1.0f,
-				0.5f, 0.0f, 0.0f, 1.0f,
-				0.0f, 0.5f, 0.0f, 1.0f
+	    	float[] vertices = {
+					-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+					0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+					0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+					0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+					-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+					-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+					-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+					0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+					0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+					0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+					-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+					-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+					-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+					-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+					-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+					-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+					-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+					-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+					0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+					0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+					0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+					0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+					0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+					0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+					-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+					0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+					0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+					0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+					-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+					-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+					-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+					0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+					0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+					0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+					-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+					-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 			};
 	    	int[] indices = {
-	    			0, 1, 2
+	    			0, 1, 2, 	2, 3, 0,
+	    			4, 5, 6,	6, 7, 4,
+	    			2, 6, 7,	7, 3, 2,
+					0, 1, 5,	5, 4, 0
 	    	};
 
 	    	FloatBuffer verticesFB = Buffers.newDirectFloatBuffer(vertices);
@@ -82,11 +131,10 @@ public class JOGLApplication implements GLEventListener{
 				@Override
 				public void draw(GL4 gl) {
 					this.bind();
-					gl.glDrawElements(GL4.GL_TRIANGLES, 3, GL4.GL_UNSIGNED_INT, 0);
+					//gl.glDrawElements(GL4.GL_TRIANGLES, indices.length, GL4.GL_UNSIGNED_INT, 0);
+					gl.glDrawArrays(GL4.GL_TRIANGLES, 0, 36);
 				}
 			};
-	    	verticesFB = null;
-	    	indicesIB = null;
 	}
 
 	@Override

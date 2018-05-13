@@ -29,6 +29,17 @@ public class MatrixUtils
 		return plain;
 	}
 	
+	public static float[] toPlainMatrix3x3(float[][] matrix)
+	{	
+		float[] plain = new float[9];
+		
+		for(int i = 0; i < matrix.length - 1; i++)
+			for(int j = 0; j < matrix[i].length - 1; j++)
+				plain[3 * i + j] = matrix[j][i];
+	
+		return plain;
+	}
+	
 	public static float[][] transposeMatrix4x4(float[][] matrix)
 	{
 		float[][] transpose = new float[4][4];
