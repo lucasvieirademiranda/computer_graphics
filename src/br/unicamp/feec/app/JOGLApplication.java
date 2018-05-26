@@ -31,8 +31,9 @@ public class JOGLApplication implements GLEventListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
-		
+
 		shader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getTransalationMatrix4x4(0, 0, -2)));
+		shader.setModelMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getTransalationMatrix4x4(0, 0, -2)));
 		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
 		shader.setNormalMatrixUniform(MatrixUtils.toPlainMatrix3x3(MatrixUtils.getIdentityMatrix4x4()));
 		shader.setAmbientColorUniform(new float[]{1, 1, 1});
@@ -40,11 +41,13 @@ public class JOGLApplication implements GLEventListener{
 		shader.setLighPositionUniform(new float[]{0, 0, 10, 1});
 		shader.setLightColorUniform(new float[]{1, 1, 1});
 		shader.setDiffuseColorUniform(new float[]{1, 0, 0, 1});
-		
+		shader.setViewPositionUniform(new float[]{0, 0, 0, 1});
+		shader.setSpecularStrengthUniform(0.5f);
+
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
-		
+
 		triangle.draw(gl);
-		
+
 		gl.glFlush();
 	}
 
