@@ -5,12 +5,17 @@ import com.jogamp.opengl.GLContext;
 
 public class DefaultShader extends BaseShader{
 	private int mModelViewMatrixUniformLocation, mProjectionMatrixUniformLocation, mNormalMatrixUniformLocation, mModelMatrixUniformLocation, mViewMatrixUniformLocation;
-	private int mAmbientColorUniformLocation, mAmbientStrengthUniformLocation;
-	private int mLightPositionUniformLocation, mLightColorUniformLocation;
-	private int mDiffuseColorUniformLocation;
-	private int mPositionAttributeLocation, mNormalAttributeLocation;
-	private int mSpecularStrengthUniformLocation;
+
 	private int mViewPositionUniformLocation;
+
+	private int mMaterialAmbientColorUniformLocation, mMaterialDiffuseColorUniformLocation, mMaterialSpecularColorUniformLocation, mMaterialShininessUniformLocation;
+
+	private int mLightPositionUniformLocation;
+	private int mLightAmbientStrengthUniformLocation;
+	private int mLightAmbientColorUniformLocation, mLightDiffuseColorUniformLocation, mLightSpecularColorUniformLocation;
+	private int mLightSpotDirectionUniformLocation, mLightSpotExponentUniformLocation, mLightSpotCutoffUniformLocation;
+
+	private int mPositionAttributeLocation, mNormalAttributeLocation;
 
 	public DefaultShader(String pVertexShader, String pFragmentShader) {
 		super(pVertexShader, pFragmentShader);
@@ -26,16 +31,24 @@ public class DefaultShader extends BaseShader{
 		//mViewMatrixUniformLocation = getUniformLocation(gl, "u_viewMatrix");
 		mProjectionMatrixUniformLocation = getUniformLocation(gl, "u_projectionMatrix");
 		mNormalMatrixUniformLocation = getUniformLocation(gl, "u_normalMatrix");
-		mAmbientColorUniformLocation = getUniformLocation(gl, "u_ambientColor");
-		mAmbientStrengthUniformLocation = getUniformLocation(gl, "u_ambientStrength");
-		mLightPositionUniformLocation = getUniformLocation(gl, "u_lightPosition");
-		mLightColorUniformLocation = getUniformLocation(gl, "u_lightColor");
-		mDiffuseColorUniformLocation = getUniformLocation(gl, "u_diffuseColor");
-		mSpecularStrengthUniformLocation = getUniformLocation(gl, "u_specularStrength");
+		mMaterialAmbientColorUniformLocation = getUniformLocation(gl, "u_material.ambientColor");
+		mMaterialDiffuseColorUniformLocation = getUniformLocation(gl, "u_material.diffuseColor");
+		mMaterialSpecularColorUniformLocation = getUniformLocation(gl, "u_material.specularColor");
+		mMaterialShininessUniformLocation = getUniformLocation(gl, "u_material.shininess");
+		mLightPositionUniformLocation = getUniformLocation(gl, "u_light.position");
+		mLightAmbientColorUniformLocation = getUniformLocation(gl, "u_light.ambientColor");
+		mLightDiffuseColorUniformLocation = getUniformLocation(gl, "u_light.diffuseColor");
+		mLightSpecularColorUniformLocation = getUniformLocation(gl, "u_light.specularColor");
+		mLightAmbientStrengthUniformLocation = getUniformLocation(gl, "u_light.ambientStrength");
+		mLightSpotDirectionUniformLocation = getUniformLocation(gl, "u_light.spotDirection");
+		mLightSpotExponentUniformLocation = getUniformLocation(gl, "u_light.spotExponent");
+		mLightSpotCutoffUniformLocation = getUniformLocation(gl, "u_light.spotCutoff");
 		mViewPositionUniformLocation = getUniformLocation(gl, "u_viewPosition");
 		
 		mPositionAttributeLocation = gl.glGetAttribLocation(mProgramId, "a_position");
 		mNormalAttributeLocation = gl.glGetAttribLocation(mProgramId, "a_normal");
+
+
 	}
 	
 	@Override
@@ -81,46 +94,82 @@ public class DefaultShader extends BaseShader{
 		
 		gl.glUniformMatrix3fv(mNormalMatrixUniformLocation, 1, false, matrix, 0);
 	}
-	
-	public void setAmbientColorUniform(float[] vector){
+
+	public void setMaterialAmbientColorUniform(float[] vector) {
 		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
-		gl.glUniform3fv(mAmbientColorUniformLocation, 1, vector, 0);
+
+		gl.glUniform3fv(mMaterialAmbientColorUniformLocation, 1, vector, 0);
 	}
-	
-	public void setAmbientStrengthUniform(float value){
+
+	public void setMaterialDiffuseColorUniform(float[] vector) {
 		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
-		gl.glUniform1f(mAmbientStrengthUniformLocation, value);
+
+		gl.glUniform3fv(mMaterialDiffuseColorUniformLocation, 1, vector, 0);
 	}
-	
-	public void setLighPositionUniform(float[] vector){
+
+	public void setMaterialSpecularColorUniform(float[] vector) {
 		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
+
+		gl.glUniform3fv(mMaterialSpecularColorUniformLocation, 1, vector, 0);
+	}
+
+	public void setMaterialShininessUniform(float value){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform1f(mMaterialShininessUniformLocation, value);
+	}
+
+	public void setLightPositionUniform(float[] vector){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
 		gl.glUniform4fv(mLightPositionUniformLocation, 1, vector, 0);
 	}
-	
-	public void setLightColorUniform(float[] vector){
-		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
-		gl.glUniform3fv(mLightColorUniformLocation, 1, vector, 0);
-	}
-	
-	public void setDiffuseColorUniform(float[] vector){
-		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
-		gl.glUniform4fv(mDiffuseColorUniformLocation, 1, vector, 0);
-	}
 
-	public void setSpecularStrengthUniform(float value){
+	public void setLightAmbientColorUniform(float[] vector) {
 		GL4 gl = GLContext.getCurrentGL().getGL4();
 
-		gl.glUniform1f(mSpecularStrengthUniformLocation, value);
+		gl.glUniform3fv(mLightAmbientColorUniformLocation, 1, vector, 0);
+	}
+
+	public void setLightDiffuseColorUniform(float[] vector) {
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform3fv(mLightDiffuseColorUniformLocation, 1, vector, 0);
+	}
+
+	public void setLightSpecularColorUniform(float[] vector) {
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform3fv(mLightSpecularColorUniformLocation, 1, vector, 0);
+	}
+
+	public void setLightSpotDirectionUniform(float[] vector){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform3fv(mLightSpotDirectionUniformLocation, 1, vector, 0);
+	}
+
+	public void setLightSpotExponentUniform(float value){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform1f(mLightSpotExponentUniformLocation, value);
+	}
+
+	public void setLightSpotCutoffUniform(float value){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform1f(mLightSpotCutoffUniformLocation, value);
 	}
 
 	public void setViewPositionUniform(float[] vector){
 		GL4 gl = GLContext.getCurrentGL().getGL4();
 
 		gl.glUniform3fv(mViewPositionUniformLocation, 1, vector, 0);
+	}
+
+	public void setLightAmbientStrengthUniform(float value){
+		GL4 gl = GLContext.getCurrentGL().getGL4();
+
+		gl.glUniform1f(mLightAmbientStrengthUniformLocation, value);
 	}
 }

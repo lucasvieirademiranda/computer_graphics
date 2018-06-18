@@ -60,5 +60,11 @@ public abstract class Geometry implements Disposable{
 		gl.glDeleteVertexArrays(1, new int[] { mVaoId }, 0);
 	}
 	
-	public abstract void draw(GL4 gl);
+	public void draw(GL4 gl){
+		bind();
+		drawGeometry(gl);
+		unbind();
+	}
+
+	protected abstract void drawGeometry(GL4 gl);
 }

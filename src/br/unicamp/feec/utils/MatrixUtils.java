@@ -115,7 +115,7 @@ public class MatrixUtils
 			  a21 = 0.0f, a22 = 0.0f, a23 = 0.0f,
 			  a31 = 0.0f, a32 = 0.0f, a33 = 0.0f;
 		
-		// Normalização do vetor
+		// Normalizaï¿½ï¿½o do vetor
 		
 		module = VectorUtils.module(x, y, z);
 		
@@ -123,7 +123,7 @@ public class MatrixUtils
 		yn = y / module;
 		zn = z / module;
 		
-		// Calculo do Seno e Cosseno do Ângulo
+		// Calculo do Seno e Cosseno do ï¿½ngulo
 		
 		rad = (float) Math.toRadians(angle);
 		
@@ -158,15 +158,15 @@ public class MatrixUtils
 	{
 		float[] u = VectorUtils.create(ux, uy, uz);
 		
-		// Calcula o vetor unitário D
+		// Calcula o vetor unitï¿½rio D
 		float[] d = VectorUtils.subtract(cx, cy, cz, ex, ey, ez);
 		float[] dn = VectorUtils.normalize(d);
 		
-		// Calcula o vetor unitário I
+		// Calcula o vetor unitï¿½rio I
 		float[] i = VectorUtils.crossProduct(d, u);
 		float[] in = VectorUtils.normalize(i);
 		
-		// Calcula o vetor unitário O
+		// Calcula o vetor unitï¿½rio O
 		float[] on = VectorUtils.crossProduct(in, dn);
 		
 		float[][] result = {
@@ -225,5 +225,13 @@ public class MatrixUtils
 		};
 		
 		return result;
+	}
+
+	public static float[][] getPerspectiveMatrix4x4(float fovY, float ratio, float near, float far)
+	{
+		float maxY = near * (float)Math.tan(fovY * Math.PI / 360.0);
+		float maxX = maxY * ratio;
+
+		return getFrustrumMatrix4x4(-maxX, maxX, -maxY, maxY, near, far);
 	}
 }

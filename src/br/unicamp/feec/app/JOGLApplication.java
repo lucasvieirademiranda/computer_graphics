@@ -9,6 +9,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import br.unicamp.feec.graphics.camera.Camera;
+import br.unicamp.feec.graphics.camera.PerspectiveCamera;
+import br.unicamp.feec.graphics.geometry.CubeGeometry;
+import br.unicamp.feec.graphics.lighting.DirectionalLight;
+import br.unicamp.feec.graphics.lighting.Light;
+import br.unicamp.feec.graphics.material.Material;
+import br.unicamp.feec.graphics.mesh.Mesh;
+import br.unicamp.feec.utils.ColorUtils;
+import br.unicamp.feec.utils.VectorUtils;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -26,27 +35,21 @@ public class JOGLApplication implements GLEventListener{
 	public static final int SCREEN_HEIGHT = 600;
 	
 	DefaultShader shader;
-	Geometry triangle;
+	Camera camera;
+	CubeGeometry cubeGeometry;
+	Material cubeMaterial;
+	Mesh cube;
+	Light light;
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
 
-		shader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getTransalationMatrix4x4(0, 0, -2)));
-		shader.setModelMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getTransalationMatrix4x4(0, 0, -2)));
-		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
-		shader.setNormalMatrixUniform(MatrixUtils.toPlainMatrix3x3(MatrixUtils.getIdentityMatrix4x4()));
-		shader.setAmbientColorUniform(new float[]{1, 1, 1});
-		shader.setAmbientStrengthUniform(0.1f);
-		shader.setLighPositionUniform(new float[]{0, 0, 10, 1});
-		shader.setLightColorUniform(new float[]{1, 1, 1});
-		shader.setDiffuseColorUniform(new float[]{1, 0, 0, 1});
-		shader.setViewPositionUniform(new float[]{0, 0, 0, 1});
-		shader.setSpecularStrengthUniform(0.5f);
-
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
 
-		triangle.draw(gl);
+		light.sendUniforms(shader);
+		//shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
+		cube.draw(gl, shader, camera);
 
 		gl.glFlush();
 	}
@@ -54,7 +57,7 @@ public class JOGLApplication implements GLEventListener{
 	@Override
 	public void dispose(GLAutoDrawable pArg0) {
 		shader.dispose();
-		triangle.dispose();
+		cubeGeometry.dispose();
 	}
 
 	@Override
@@ -76,68 +79,24 @@ public class JOGLApplication implements GLEventListener{
 		 shader = new DefaultShader(vertexShader, fragmentShader);
 		 shader.init();
 		 shader.use();
-		 
-	    	float[] vertices = {
-					-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-					0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-					0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-					0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-					-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-					-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-					-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-					0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-					0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-					0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-					-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-					-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		camera = new PerspectiveCamera(45, SCREEN_WIDTH / (float) SCREEN_HEIGHT, 1, 1000);
 
-					-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-					-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-					-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-					-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-					-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-					-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	    cubeGeometry = new CubeGeometry(shader);
 
-					0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-					0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-					0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-					0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-					0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-					0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		cubeMaterial = new Material();
+		cubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+		cubeMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+		cubeMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		cubeMaterial.setShineness(64);
 
-					-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-					0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-					0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-					0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-					-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-					-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		cube = new Mesh(cubeGeometry, cubeMaterial);
 
-					-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-					0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-					0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-					0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-					-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-					-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-			};
-	    	int[] indices = {
-	    			0, 1, 2, 	2, 3, 0,
-	    			4, 5, 6,	6, 7, 4,
-	    			2, 6, 7,	7, 3, 2,
-					0, 1, 5,	5, 4, 0
-	    	};
-
-	    	FloatBuffer verticesFB = Buffers.newDirectFloatBuffer(vertices);
-	    	IntBuffer indicesIB = Buffers.newDirectIntBuffer(indices);
-	    	triangle = new Geometry(shader, verticesFB, indicesIB) {
-				
-				@Override
-				public void draw(GL4 gl) {
-					this.bind();
-					//gl.glDrawElements(GL4.GL_TRIANGLES, indices.length, GL4.GL_UNSIGNED_INT, 0);
-					gl.glDrawArrays(GL4.GL_TRIANGLES, 0, 36);
-				}
-			};
+		light = new DirectionalLight(VectorUtils.create(0, 0, 1));
+		light.setAmbientColor(ColorUtils.create(1, 1, 1, 1));
+		light.setAmbientStrength(0.1f);
+		light.setDiffuseColor(ColorUtils.create(1, 1, 1, 1));
+		light.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
 	}
 
 	@Override
