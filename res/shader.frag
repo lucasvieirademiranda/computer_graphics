@@ -30,6 +30,7 @@ in vec4 v_position;
 out vec4 fColor;
 
 void main (void) {
+
 	vec3 normal = normalize(v_normal);
 
     vec3 lightDirection;
@@ -38,7 +39,8 @@ void main (void) {
     //directional
     if(u_light.position.w == 0){
         lightDirection = normalize(-u_light.position).xyz;
-        theta = 1;
+        theta = -1;
+
     }
     //point or spot
     else{
@@ -56,7 +58,7 @@ void main (void) {
 
     vec3 viewDirection = normalize(u_viewPosition - v_position).xyz;
     vec3 reflectDirection = reflect(-lightDirection, normal);
-    float intensity = pow(clamp(theta / u_light.spotCutoff, 0.0, 1.0), u_light.spotExponent);
+    float intensity = pow(clamp(theta / u_light.spotCutoff, 0.0, 1.0), u_light.spotExponent + 1);//The result is undefined if x<0 or if x=0 and y≤0.
 
     //ambient
     vec3 ambientColor = u_light.ambientColor * u_material.ambientColor * u_light.ambientStrength;

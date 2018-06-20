@@ -164,7 +164,7 @@ public class DefaultShader extends BaseShader{
 	public void setViewPositionUniform(float[] vector){
 		GL4 gl = GLContext.getCurrentGL().getGL4();
 
-		gl.glUniform3fv(mViewPositionUniformLocation, 1, vector, 0);
+		gl.glUniform4fv(mViewPositionUniformLocation, 1, vector, 0);
 	}
 
 	public void setLightAmbientStrengthUniform(float value){

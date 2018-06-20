@@ -2,6 +2,7 @@ package br.unicamp.feec.graphics.lighting;
 
 import br.unicamp.feec.graphics.shader.DefaultShader;
 import br.unicamp.feec.utils.VectorUtils;
+import com.jogamp.opengl.GLContext;
 
 public abstract class Light {
     private float[] mPosition;

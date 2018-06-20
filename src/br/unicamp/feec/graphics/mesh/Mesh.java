@@ -18,11 +18,11 @@ public class Mesh {
         mMaterial = pMaterial;
     }
 
-    float[][] getTransformationMatrix(){
+    public  float[][] getTransformationMatrix(){
         return mTransformationMatrix.clone();
     }
 
-    void setTransformationMatrix(float[][] pTransformationMatrix){
+    public void setTransformationMatrix(float[][] pTransformationMatrix){
         mTransformationMatrix = pTransformationMatrix.clone();
     }
 

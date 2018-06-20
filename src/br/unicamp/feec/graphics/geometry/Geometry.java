@@ -22,7 +22,7 @@ public abstract class Geometry implements Disposable{
 		mShader = pShader;
 		
 		GL4 gl = GLContext.getCurrentGL().getGL4();
-		
+
 		int[] vaoPointer = new int[1];
 		gl.glGenVertexArrays(1, vaoPointer, 0);
 		mVaoId = vaoPointer[0];
@@ -40,7 +40,7 @@ public abstract class Geometry implements Disposable{
     	gl.glBufferData(GL4.GL_ELEMENT_ARRAY_BUFFER, pIndices.remaining() * (Integer.SIZE / Byte.SIZE), pIndices, GL4.GL_STATIC_DRAW);
     	
     	mShader.bindAttributes();
-    	
+
     	gl.glBindVertexArray(0);
 	}
 	

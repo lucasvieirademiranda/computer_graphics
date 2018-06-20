@@ -40,9 +40,13 @@ public class JOGLApplication implements GLEventListener{
 	Material cubeMaterial;
 	Mesh cube;
 	Light light;
+	float increment = 0;
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
+		increment += 0.5;
+		cube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(increment, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(0, 0, -4)));
+
 		GL4 gl = drawable.getGL().getGL4();
 
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
@@ -64,6 +68,7 @@ public class JOGLApplication implements GLEventListener{
 	public void init(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
 
+		gl.glClearColor(0, 0, 0, 1);
 		gl.glEnable(GL4.GL_DEPTH_TEST);
 		gl.glPolygonMode(GL4.GL_FRONT_AND_BACK, GL4.GL_FILL);
 		
@@ -88,11 +93,12 @@ public class JOGLApplication implements GLEventListener{
 		cubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
 		cubeMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
 		cubeMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
-		cubeMaterial.setShineness(64);
+		cubeMaterial.setShineness(256);
 
 		cube = new Mesh(cubeGeometry, cubeMaterial);
+		cube.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -4));
 
-		light = new DirectionalLight(VectorUtils.create(0, 0, 1));
+		light = new DirectionalLight(VectorUtils.create(0, 0, -1));
 		light.setAmbientColor(ColorUtils.create(1, 1, 1, 1));
 		light.setAmbientStrength(0.1f);
 		light.setDiffuseColor(ColorUtils.create(1, 1, 1, 1));
