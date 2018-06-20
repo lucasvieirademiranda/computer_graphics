@@ -4,9 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL2.3.2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Native-JOGL2.3.2"/>
-	<classpathentry kind="lib" path="lib/jogl-all-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="lib/jogl-all.jar"/>
-	<classpathentry kind="lib" path="lib/gluegen-rt-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

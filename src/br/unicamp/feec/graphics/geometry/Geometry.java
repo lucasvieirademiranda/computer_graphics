@@ -10,15 +10,18 @@ import com.sun.media.jfxmediaimpl.MediaDisposer.Disposable;
 
 import br.unicamp.feec.graphics.shader.BaseShader;
 
-public abstract class Geometry implements Disposable{
+public abstract class Geometry implements Disposable
+{
 	private BaseShader mShader;
 	private int mVaoId, mVboId, mVioId;
 	
-	public Geometry(BaseShader pShader, float[] pVertices, int[] pIndices){
+	public Geometry(BaseShader pShader, float[] pVertices, int[] pIndices)
+	{
 		this(pShader, Buffers.newDirectFloatBuffer(pVertices), Buffers.newDirectIntBuffer(pIndices));
 	}
 	
-	public Geometry(BaseShader pShader, FloatBuffer pVertices, IntBuffer pIndices){
+	public Geometry(BaseShader pShader, FloatBuffer pVertices, IntBuffer pIndices)
+	{
 		mShader = pShader;
 		
 		GL4 gl = GLContext.getCurrentGL().getGL4();
@@ -44,23 +47,27 @@ public abstract class Geometry implements Disposable{
     	gl.glBindVertexArray(0);
 	}
 	
-	public void bind(){
+	public void bind()
+	{
 		GLContext.getCurrentGL().getGL4().glBindVertexArray(mVaoId);
 	}
 	
-	public void unbind(){
+	public void unbind()
+	{
 		GLContext.getCurrentGL().getGL4().glBindVertexArray(0);
 	}
 	
 	@Override
-	public void dispose() {
+	public void dispose()
+	{
 		GL4 gl = GLContext.getCurrentGL().getGL4();
 		
 		gl.glDeleteBuffers(2, new int[] { mVboId, mVioId }, 0);
 		gl.glDeleteVertexArrays(1, new int[] { mVaoId }, 0);
 	}
 	
-	public void draw(GL4 gl){
+	public void draw(GL4 gl)
+	{
 		bind();
 		drawGeometry(gl);
 		unbind();
