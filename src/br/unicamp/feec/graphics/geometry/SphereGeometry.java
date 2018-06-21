@@ -1,61 +1,81 @@
 package br.unicamp.feec.graphics.geometry;
 
+import java.util.ArrayList;
+
 import com.jogamp.opengl.GL4;
 
 import br.unicamp.feec.graphics.shader.BaseShader;
 
 public class SphereGeometry extends Geometry
 {
-	private static final int SPHERE_RESOLUTION = 10;
-	private static final float RADIUS = 1.0f;
+	private static final float RADIUS = 5.0f;
+	
+	private static final int LATITUDE = 10;
+	private static final int LONGITUDE = 10;
 	
 	public SphereGeometry(BaseShader pShader)
 	{
-		super(pShader, buildSphere(), new int[] {});
+		super(pShader, buildSphere(RADIUS, LATITUDE, LONGITUDE), new int[] {});
 	}
 	
-	protected static float[] buildSphere()
+	protected static float[] buildSphere(float radius, int latitude, int longitude)
 	{
-		float[] vertices = new float[8 * (SPHERE_RESOLUTION + 1) * 2 * SPHERE_RESOLUTION + 1];
+		ArrayList<Float> vertices = new ArrayList<Float>();
 		
-		float x = 0.0f, y = 0.0f, z = 0.0f, w = 1.0f;
-		
-		int index = 0;
-		
-		for (int i = 0; i < SPHERE_RESOLUTION; i++)
+		for (int i = 0; i <= latitude; i++)
 		{
-			for (int j = 0; j <= 2 * SPHERE_RESOLUTION; j++)
+			float currentLatitude1 = ((float) Math.PI) * (-0.5f + (i - 1) / (float) latitude);
+			
+			float z0 = (float) Math.sin(currentLatitude1);
+			float zr0 = (float) Math.cos(currentLatitude1);
+			
+			float currentLatitude2 = ((float) Math.PI) * (-0.5f + i / (float) latitude);
+			
+			float z1 = (float) Math.sin(currentLatitude2);
+			float zr1 = (float) Math.cos(currentLatitude2);
+			
+			for (int j = 0; j <= longitude; j++)
 			{
-				x = (float) (RADIUS * Math.cos((double) i * 2 * Math.PI / SPHERE_RESOLUTION) * Math.sin((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));
-				y = (float) (RADIUS * Math.cos((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));	
-				z = (float) (RADIUS * Math.sin((double) i * 2 * Math.PI / SPHERE_RESOLUTION) * Math.sin((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));
 				
-				index = i * (2 * SPHERE_RESOLUTION + 1) * 8 + j * 8;
+				float currentLongitude = 2 * ((float) Math.PI) * (j - 1) / longitude;
 				
-				vertices[index] = x;
-				vertices[index + 1] = y;
-				vertices[index + 2] = z;
-				vertices[index + 3] = w;
+				float x = (float) Math.cos(currentLongitude);
+				float y = (float) Math.sin(currentLongitude);
 				
-				x = (float) (RADIUS * Math.cos((double) (i + 1) * 2 * Math.PI / SPHERE_RESOLUTION) * Math.sin((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));
-				y = (float) (RADIUS * Math.cos((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));
-				z = (float) (RADIUS * Math.sin((double) (i + 1) * 2 * Math.PI / SPHERE_RESOLUTION) * Math.sin((double) j * Math.PI / (2 * SPHERE_RESOLUTION)));
+				// South Hemisphere
+				vertices.add(radius * x * zr0);
+				vertices.add(radius * y * zr0);
+				vertices.add(radius * z0);
 				
-				vertices[index + 4] = x;
-				vertices[index + 5] = y;
-				vertices[index + 6] = z;
-				vertices[index + 7] = w;
+				// South Hemisphere Normals
+				vertices.add(x * zr0);
+				vertices.add(y * zr0);
+				vertices.add(z0);
+				
+				// North Hemisphere
+				vertices.add(radius * x * zr1);
+				vertices.add(radius * y * zr1);
+				vertices.add(radius * z1);
+				
+				// North Hemisphere Normals
+				vertices.add(x * zr1);
+				vertices.add(y * zr1);
+				vertices.add(z1);
 			}
 		}
 		
-		return vertices;
+		float[] data = new float[vertices.size()];
+		
+		for (int i = 0; i < vertices.size(); i++)
+			data[i] = vertices.get(i);
+		
+		return data;
 	}
 	
 	@Override
 	protected void drawGeometry(GL4 gl)
 	{
-		for (int j = 0; j < 2 * SPHERE_RESOLUTION; j++)
-			gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, j * 2 * (SPHERE_RESOLUTION), 4 * (SPHERE_RESOLUTION));
+		gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 2 * (LATITUDE + 1) * (LONGITUDE + 1));
 	}
 
 }

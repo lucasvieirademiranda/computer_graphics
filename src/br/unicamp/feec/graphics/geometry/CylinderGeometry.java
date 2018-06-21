@@ -1,5 +1,7 @@
 package br.unicamp.feec.graphics.geometry;
 
+import java.util.ArrayList;
+
 import com.jogamp.opengl.GL4;
 
 import br.unicamp.feec.graphics.shader.BaseShader;
@@ -8,96 +10,122 @@ public class CylinderGeometry extends Geometry
 {
 	private static float CYLINDER_RADIUS = 3.0f;
 	private static float CYLINDER_HEIGHT = 6.0f;
+	
 	private static int CYLINDER_RESOLUTION = 20;
 	
 	public CylinderGeometry(BaseShader pShader)
 	{
-		super(pShader, buildCylinder(), new int[] {});
+		super(pShader, buildCylinder(CYLINDER_RADIUS, CYLINDER_HEIGHT, CYLINDER_RESOLUTION), new int[] {});
 	}
 	
-	public static float[] buildCylinder()
+	private static float[] buildCylinder(float radius, float height, float circleResolution)
 	{
-		if (CYLINDER_RADIUS == 0 || CYLINDER_HEIGHT == 0)
-				return null;
+		ArrayList<Float> vertices = new ArrayList<Float>();
 		
-		float[] vertices = new float[8 * (CYLINDER_RESOLUTION + 1) + 8 * (CYLINDER_RESOLUTION + 2) + 4];
+		float half = height / 2;
 		
-		float x = 0.0f, y = 0.0f, z = 0.0f, w = 1.0f;
-		
-		int count = 0;
-		
-		for (int i = 0; i <= CYLINDER_RESOLUTION; i++)
+		// Circle Resolution * 2 - TRIANGLE_STRIP
+		for (int i = 0; i <= circleResolution; i++)
 		{
-			y = 0;
-			x= (float) (CYLINDER_RADIUS * Math.cos((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
-			z= (float) (CYLINDER_RADIUS * Math.sin((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
+			float angle = (2 * ((float) Math.PI)) * ( i / circleResolution );
 			
-			vertices[i * 8] = x;
-			vertices[i * 8 + 1] = y;
-			vertices[i * 8 + 2] = z;
-			vertices[i * 8 + 3] = w;
+			float x = (float) Math.cos(angle);
+			float z = (float) Math.sin(angle);
 			
-			y = CYLINDER_HEIGHT;
+			// Bottom Circle
+			vertices.add(radius * x);
+			vertices.add(-half);
+			vertices.add(radius * z);
 			
-			vertices[i * 8 + 4] = x;
-			vertices[i * 8 + 5] = y;
-			vertices[i * 8 + 6] = z;
-			vertices[i * 8 + 7] = w;
+			// Bottom Circle Normals
+			vertices.add(x);
+			vertices.add(0f);
+			vertices.add(z);
+			
+			// Top Circle
+			vertices.add(radius * x);
+			vertices.add(half);
+			vertices.add(radius * z);
+			
+			// Top Circle Normals
+			
+			vertices.add(x);
+			vertices.add(0f);
+			vertices.add(z);
 		}
 		
-		count = (CYLINDER_RESOLUTION + 1) * 8 + 4;
+		// Center of Bottom Circle
+		vertices.add(0.0f);
+		vertices.add(-half);
+		vertices.add(0.0f);
 		
-		vertices[count] = 0.0f;
-		vertices[count + 1] = 0.0f;
-		vertices[count + 2] = 0.0f;
-		vertices[count + 3] = 1.0f;
+		// Center of Bottom Circle - Normal
+		vertices.add(0f);
+		vertices.add(-1f);
+		vertices.add(0f);
 		
-		count += 4;
-		
-		y = 0.0f;
-		
-		for (int i = 0; i <= CYLINDER_RESOLUTION; i++)
+		// CircleResolution - Bottom Circle - TRIANGLE_FAN
+		for (int j = 0; j <= circleResolution; j++)
 		{
-			x = (float) (CYLINDER_RADIUS * Math.cos((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
-			z = (float) (CYLINDER_RADIUS * Math.sin((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
+			float angle = (2 * ((float) Math.PI)) * ( j / circleResolution );
 			
-			vertices[count + i * 4] = x;
-			vertices[count + i * 4 + 1] = y;
-			vertices[count + i * 4 + 2] = z;
-			vertices[count + i * 4 + 3] = w;
+			float x = (float) Math.cos(angle);
+			float z = (float) Math.sin(angle);
+			
+			// Vertices
+			vertices.add(radius * x);
+			vertices.add(-half);
+			vertices.add(radius * z);
+			
+			// Normals
+			vertices.add(0f);
+			vertices.add(-1f);
+			vertices.add(0f);
 		}
 		
-		y = CYLINDER_HEIGHT;
+		// Center of Top Circle
+		vertices.add(0.0f);
+		vertices.add(half);
+		vertices.add(0.0f);
 		
-		count += (CYLINDER_RESOLUTION + 1) * 4;
+		// Center of Bottom Circle - Normal
+		vertices.add(0f);
+		vertices.add(1f);
+		vertices.add(0f);
 		
-		vertices[count] = 0.0f;
-		vertices[count + 1] = y;
-		vertices[count + 2] = 0.0f;
-		vertices[count + 3] = 1.0f;
-		
-		count += 4;
-		
-		for (int i = 0; i <= CYLINDER_RESOLUTION; i++)
+		// CircleResolution - Top Circle - TRIANGLE_FAN
+		for (int k = 0; k <= circleResolution; k++)
 		{
-			x= (float) (CYLINDER_RADIUS * Math.cos((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
-			z= (float) (CYLINDER_RADIUS * Math.sin((double) i * 2 * Math.PI / CYLINDER_RESOLUTION));
+			float angle = (2 * ((float) Math.PI)) * ( k / circleResolution );
 			
-			vertices[count + i * 4] = x;
-			vertices[count + i * 4 + 1] = y; 
-			vertices[count + i * 4 + 2] = z; 
-			vertices[count + i * 4 + 3] = w;
+			float x = (float) Math.cos(angle);
+			float z = (float) Math.sin(angle);
+			
+			// Vertices
+			vertices.add(radius * x);
+			vertices.add(half);
+			vertices.add(radius * z);
+			
+			// Normals
+			vertices.add(0f);
+			vertices.add(1f);
+			vertices.add(0f);
 		}
 		
-		return vertices;
+		float[] data = new float[vertices.size()];
+		
+		for (int i = 0; i < vertices.size(); i++)
+			data[i] = vertices.get(i);
+		
+		return data;
 	}
 	
 	@Override
 	protected void drawGeometry(GL4 gl)
 	{
 		gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 2 * (CYLINDER_RESOLUTION + 1));
-		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 2 * (CYLINDER_RESOLUTION + 1) + 1, CYLINDER_RESOLUTION + 1);
-		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 2 * (CYLINDER_RESOLUTION + 1) + CYLINDER_RESOLUTION + 3, CYLINDER_RESOLUTION + 1);
+		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 2 * (CYLINDER_RESOLUTION + 1), (CYLINDER_RESOLUTION + 1));
+		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 3 * (CYLINDER_RESOLUTION + 1) + 1, (CYLINDER_RESOLUTION + 1) + 1);
 	}
 
 	
