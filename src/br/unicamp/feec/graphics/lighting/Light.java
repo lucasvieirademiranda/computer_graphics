@@ -16,7 +16,7 @@ public abstract class Light {
         mPosition = new float[]{0, 0, 0, 1};
         mSpotDirection = new float[]{0, 0, 0};
         mSpotExponent = 0;
-        mSpotCutoff = -1;
+        mSpotCutoff = 180;
         mDiffuseColor = new float[]{1, 1, 1};
         mAmbientColor = new float[]{1, 1, 1};
         mSpecularColor = new float[]{1, 1, 1};

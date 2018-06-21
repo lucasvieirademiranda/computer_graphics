@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 import br.unicamp.feec.graphics.camera.Camera;
 import br.unicamp.feec.graphics.camera.PerspectiveCamera;
-import br.unicamp.feec.graphics.geometry.CubeGeometry;
+import br.unicamp.feec.graphics.geometry.*;
 import br.unicamp.feec.graphics.lighting.DirectionalLight;
 import br.unicamp.feec.graphics.lighting.Light;
 import br.unicamp.feec.graphics.material.Material;
@@ -25,7 +25,6 @@ import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 
-import br.unicamp.feec.graphics.geometry.Geometry;
 import br.unicamp.feec.graphics.shader.DefaultShader;
 import br.unicamp.feec.utils.JGLU;
 import br.unicamp.feec.utils.MatrixUtils;
@@ -44,15 +43,17 @@ public class JOGLApplication implements GLEventListener{
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		increment += 0.5;
-		cube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(increment, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(0, 0, -4)));
+		increment += 0.005;
+		//cube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(increment, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(0, 0, -40)));
+		//float[] v = VectorUtils.normalize(new float[]{-4 + (float)Math.sin(increment) * 8, -4 +(float) Math.sin(increment) * 8, -1});
+		//light.setPosition(new float[]{v[0], v[1], v[2], 0});
 
 		GL4 gl = drawable.getGL().getGL4();
 
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
 
 		light.sendUniforms(shader);
-		//shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
+		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
 		cube.draw(gl, shader, camera);
 
 		gl.glFlush();
@@ -86,6 +87,7 @@ public class JOGLApplication implements GLEventListener{
 		 shader.use();
 
 		camera = new PerspectiveCamera(45, SCREEN_WIDTH / (float) SCREEN_HEIGHT, 1, 1000);
+		camera.setViewMatrix(MatrixUtils.getLookAtMatrix4x4(0, 0, 0, 0, -8, -8, 0, 1, 0));
 
 	    cubeGeometry = new CubeGeometry(shader);
 
@@ -95,8 +97,8 @@ public class JOGLApplication implements GLEventListener{
 		cubeMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
 		cubeMaterial.setShineness(256);
 
-		cube = new Mesh(cubeGeometry, cubeMaterial);
-		cube.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -4));
+		cube = new Mesh(new ConeGeometry(shader), cubeMaterial);
+		cube.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -40));
 
 		light = new DirectionalLight(VectorUtils.create(0, 0, -1));
 		light.setAmbientColor(ColorUtils.create(1, 1, 1, 1));

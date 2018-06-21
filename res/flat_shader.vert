@@ -24,14 +24,20 @@ uniform Material u_material;
 uniform Light u_light;
 uniform vec4 u_viewPosition;
 
-in vec3 v_normal;
-in vec4 v_position;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_modelViewMatrix;
+uniform mat4 u_modelMatrix;
+uniform mat4 u_viewMatrix;
+uniform mat3 u_normalMatrix;
 
-out vec4 fColor;
+in vec3 a_position;
+in vec3 a_normal;
 
-void main (void) {
+out vec4 v_color;
 
-	vec3 normal = normalize(v_normal);
+void main(void) {
+	vec3 normal = u_normalMatrix * a_normal;
+	vec4 position = u_modelMatrix * vec4(a_position, 1);
 
     vec3 lightDirection;
     float theta = 0;
@@ -44,7 +50,7 @@ void main (void) {
     }
     //point or spot
     else{
-        lightDirection = normalize(u_light.position - v_position).xyz;
+        lightDirection = normalize(u_light.position - position).xyz;
 
         //point
         if(u_light.spotCutoff == 180){
@@ -56,7 +62,7 @@ void main (void) {
         }
     }
 
-    vec3 viewDirection = normalize(u_viewPosition - v_position).xyz;
+    vec3 viewDirection = normalize(u_viewPosition - position).xyz;
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float intensity = pow(clamp(theta / cos(radians(u_light.spotCutoff)), 0.0, 1.0), u_light.spotExponent + 1);//The result is undefined if x<0 or if x=0 and y≤0.
 
@@ -71,5 +77,7 @@ void main (void) {
     float specularStrength = pow(max(dot(viewDirection, reflectDirection), 0.0), u_material.shininess);
     vec3 specularColor = u_light.specularColor * u_material.specularColor * specularStrength * intensity;
 
-    fColor = vec4(ambientColor + diffuseColor + specularColor, 1);
-} ;
+    v_color = vec4(ambientColor + diffuseColor + specularColor, 1);
+
+	gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1);
+};
