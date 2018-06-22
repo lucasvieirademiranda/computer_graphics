@@ -35,47 +35,34 @@ public class ConeGeometry extends Geometry
 		
 		// circleResolution * heightResolution * 3
 		
-		for (int i = 0; i <= circleResolution; i++)
+		for(int i = 0; i <= circleResolution; i++)
 		{
 			for(int j = 0; j <= heightResolution; j++)
 			{
-				// Cone Parametric Equation
-				y = height * (j / (float) heightResolution);
-				
-				ratio = (height - y) / height;
-				
 				angle = 2 * ((float) Math.PI) * (i / (float) circleResolution);
 				
 				cos = ((float) Math.cos(angle));
 				sin = ((float) Math.sin(angle));
 				
-				x = ratio * radius * cos;
-				z = ratio * radius * sin;	
+				x = radius * cos;
+				z = radius * sin;
 				
-				// Coordenadas da Seção Cônica
+				// Cone Bottom
 				vertices.add(x);
-				vertices.add(y);
+				vertices.add(0.0f);
 				vertices.add(z);				
 				
-				// Normal
+				// Cone Bottom Normal
 				vertices.add(coneCos * cos);
 				vertices.add(coneSin);
 				vertices.add(coneCos * sin);
 				
-				angle = 2 * ((float) Math.PI) * (i + 1 / (float) circleResolution);
+				// Cone Top
+				vertices.add(0f);
+				vertices.add(height);
+				vertices.add(0f);				
 				
-				cos = ((float) Math.cos(angle));
-				sin = ((float) Math.sin(angle));
-				
-				x = ratio * radius * cos;
-				z = ratio * radius * sin;
-				
-				// Coordenadas da Seção Cônica
-				vertices.add(x);
-				vertices.add(y);
-				vertices.add(z);
-				
-				// Normal
+				// Cone Top Normal
 				vertices.add(coneCos * cos);
 				vertices.add(coneSin);
 				vertices.add(coneCos * sin);
