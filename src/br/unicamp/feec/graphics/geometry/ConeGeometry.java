@@ -11,8 +11,8 @@ public class ConeGeometry extends Geometry
 	private static final float RADIUS = 5.0f;
 	private static final float HEIGHT = 5.0f;
 	
-	private static final int CIRCLE_RESOLUTION = 10;
-	private static final int HEIGHT_RESOLUTION = 10;
+	private static final int CIRCLE_RESOLUTION = 50;
+	private static final int HEIGHT_RESOLUTION = 50;
 	
 	public ConeGeometry(BaseShader pShader)
 	{
@@ -63,9 +63,9 @@ public class ConeGeometry extends Geometry
 				vertices.add(0f);				
 				
 				// Cone Top Normal
-				vertices.add(coneCos * cos);
-				vertices.add(coneSin);
-				vertices.add(coneCos * sin);
+				vertices.add(0f);
+				vertices.add(0f);
+				vertices.add(0f);
 			}
 		}
 		
@@ -108,10 +108,8 @@ public class ConeGeometry extends Geometry
 	@Override
 	protected void drawGeometry(GL4 gl)
 	{
-		for (int j = 0; j <= CIRCLE_RESOLUTION; j++)
-			gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, j * 2 * (HEIGHT_RESOLUTION + 1), 2 * (HEIGHT_RESOLUTION + 1));
-		
-		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 2 * (CIRCLE_RESOLUTION + 1) * (HEIGHT_RESOLUTION + 1), HEIGHT_RESOLUTION + 1);
+		gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 2 * (CIRCLE_RESOLUTION + 1) * (HEIGHT_RESOLUTION + 1));
+		gl.glDrawArrays(GL4.GL_TRIANGLE_FAN, 2 * (CIRCLE_RESOLUTION + 1) * (HEIGHT_RESOLUTION + 1), CIRCLE_RESOLUTION + 3);
 	}
 
 }

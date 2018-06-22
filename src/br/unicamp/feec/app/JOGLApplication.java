@@ -35,9 +35,15 @@ public class JOGLApplication implements GLEventListener{
 	
 	DefaultShader shader;
 	Camera camera;
-	CubeGeometry cubeGeometry;
-	Material cubeMaterial;
-	Mesh cube;
+	
+	//CubeGeometry cubeGeometry;
+	//Material cubeMaterial;
+	//Mesh cube;
+	
+	ConeGeometry coneGeometry;
+	Material coneMaterial;
+	Mesh cone;
+	
 	Light light;
 	float increment = 0;
 	
@@ -54,7 +60,8 @@ public class JOGLApplication implements GLEventListener{
 
 		light.sendUniforms(shader);
 		shader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.getFrustrumMatrix4x4(-1, 1, -1, 1, 1, 1000)));
-		cube.draw(gl, shader, camera);
+		//cube.draw(gl, shader, camera);
+		cone.draw(gl, shader, camera);
 
 		gl.glFlush();
 	}
@@ -62,7 +69,8 @@ public class JOGLApplication implements GLEventListener{
 	@Override
 	public void dispose(GLAutoDrawable pArg0) {
 		shader.dispose();
-		cubeGeometry.dispose();
+		//cubeGeometry.dispose();
+		coneGeometry.dispose();
 	}
 
 	@Override
@@ -89,7 +97,19 @@ public class JOGLApplication implements GLEventListener{
 		camera = new PerspectiveCamera(45, SCREEN_WIDTH / (float) SCREEN_HEIGHT, 1, 1000);
 		camera.setViewMatrix(MatrixUtils.getLookAtMatrix4x4(0, 0, 0, 0, -8, -8, 0, 1, 0));
 
-	    cubeGeometry = new CubeGeometry(shader);
+		coneGeometry = new ConeGeometry(shader);
+		
+		coneMaterial = new Material();
+		coneMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+		coneMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+		coneMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		coneMaterial.setShineness(256);
+
+		cone = new Mesh(new ConeGeometry(shader), coneMaterial);
+		cone.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -40));
+		
+		
+	    /*cubeGeometry = new CubeGeometry(shader);
 
 		cubeMaterial = new Material();
 		cubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
@@ -98,7 +118,7 @@ public class JOGLApplication implements GLEventListener{
 		cubeMaterial.setShineness(256);
 
 		cube = new Mesh(new ConeGeometry(shader), cubeMaterial);
-		cube.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -40));
+		cube.setTransformationMatrix(MatrixUtils.getTransalationMatrix4x4(0, 0, -40));*/
 
 		light = new DirectionalLight(VectorUtils.create(0, 0, -1));
 		light.setAmbientColor(ColorUtils.create(1, 1, 1, 1));
