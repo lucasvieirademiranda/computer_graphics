@@ -31,10 +31,10 @@ public class Mesh {
 
         pShader.setProjectionMatrixUniform(MatrixUtils.toPlainMatrix4x4(pCamera.getProjectionMatrix()));
         pShader.setModelMatrixUniform(MatrixUtils.toPlainMatrix4x4(mTransformationMatrix));
-        pShader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.multiplyMatrix4x4(viewMatrix, mTransformationMatrix)));
+        pShader.setModelViewMatrixUniform(MatrixUtils.toPlainMatrix4x4(MatrixUtils.multiplyMatrix4x4(mTransformationMatrix, viewMatrix)));
         //pShader.setNormalMatrixUniform(MatrixUtils.toPlainMatrix3x3(MatrixUtils.transposeMatrix4x4(MatrixUtils.inverse(mTransformationMatrix))));TODO: implementar inversa da matrix 4x4
         pShader.setNormalMatrixUniform(MatrixUtils.toPlainMatrix3x3(mTransformationMatrix));
-        pShader.setViewPositionUniform(new float[]{ -viewMatrix[3][0], -viewMatrix[3][1], -viewMatrix[3][2], 1 });
+        pShader.setViewPositionUniform(new float[]{ viewMatrix[3][0], viewMatrix[3][1], viewMatrix[3][2], 1 });
         mMaterial.sendUniforms(pShader);
         mGeometry.draw(pGl);
     }
