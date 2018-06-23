@@ -7,6 +7,59 @@ package br.unicamp.feec.utils;
 
 public class MatrixUtils
 {
+	public static float getDeterminant(float[][] matrix)
+	{
+		if (matrix.length != matrix[0].length)
+			throw new IllegalStateException("invalid dimensions");
+
+		if (matrix.length == 2)
+			return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+		
+		float determinant = 0;
+		
+		for (int i = 0; i < matrix[0].length; i++)
+			determinant += (float) Math.pow(-1, i) * matrix[0][i] * getDeterminant(minor(matrix, 0, i));
+		
+		return determinant;
+	}
+
+	public static float[][] getInverse(float[][] matrix)
+	{
+		float[][] inverse = new float[matrix.length][matrix.length];;
+
+		// Minors and Cofactors
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; j < matrix[i].length; j++)
+				inverse[i][j] = (float) Math.pow(-1, i + j) * getDeterminant(minor(matrix, i, j));
+
+		// Adjugate and Determinant
+		float determinant = (float) 1.0 / getDeterminant(matrix);
+		
+		for (int i = 0; i < inverse.length; i++)
+		{
+			for (int j = 0; j <= i; j++)
+			{
+				float auxiliar = inverse[i][j];
+				inverse[i][j] = inverse[j][i] * determinant;
+				inverse[j][i] = auxiliar * determinant;
+			}
+		}
+
+		return inverse;
+	}
+
+	private static float[][] minor(float[][] matrix, int row, int column) 
+	{
+		float[][] minor = new float[matrix.length - 1][matrix.length - 1];
+
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; i != row && j < matrix[i].length; j++)
+				if (j != column)
+					minor[i < row ? i : i - 1][j < column ? j : j - 1] = matrix[i][j];
+		
+		return minor;
+	}
+	
 	public static float[][] toSquareMatrix4x4(float[] matrix)
 	{
 		float[][] square = new float[4][4];
