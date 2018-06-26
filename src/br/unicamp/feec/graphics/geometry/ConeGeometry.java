@@ -12,8 +12,8 @@ public class ConeGeometry extends Geometry
 	private static final float RADIUS = 1.0f;
 	private static final float HEIGHT = 1.0f;
 	
-	private static final int CIRCLE_RESOLUTION = 50;
-	private static final int HEIGHT_RESOLUTION = 50;
+	private static final int CIRCLE_RESOLUTION = 20;
+	private static final int HEIGHT_RESOLUTION = 20;
 	
 	public ConeGeometry(BaseShader pShader)
 	{

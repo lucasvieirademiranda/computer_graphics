@@ -39,58 +39,58 @@ public class JOGLApplication implements GLEventListener
 	Camera camera;
 	
 	Geometry cubeGeometry,
+			 cube1Geometry,
 			 sphereGeometry,
 			 sphere1Geometry,
 			 sphere2Geometry, 
 			 toroidGeometry, 
-			 cylinderGeometry, 
+			 cylinderGeometry,
+			 cylinder1Geometry, 
 			 coneGeometry,
 			 cone1Geometry;
 	
-	Material cubeMaterial, 
+	Material cubeMaterial,
+			 cube1Material,
 			 sphereMaterial,
 			 sphere1Material, 
 			 sphere2Material, 
 			 toroidMaterial, 
 			 cylinderMaterial, 
+			 cylinder1Material, 
 			 coneMaterial,
 			 cone1Material;
 	
-	Mesh cube, 
+	Mesh cube,
+		 cube1,
 		 sphere,
 		 sphere1, 
 		 sphere2, 
 		 toroid, 
 		 cylinder, 
+		 cylinder1,
 		 cone,
 		 cone1;
 	
 	Light light;
 	
-	float animationSpeedRotationSlow, animationSpeedRotationFast;
+	float angle = 0;
+	float fastAngle = 0;
 	
-	float animationSpeedPositionSlow, animationSpeedPositionFast;
-
 	@Override
 	public void display(GLAutoDrawable drawable)
 	{
-		//animationSpeedRotationSlow += 0.33;
-		animationSpeedRotationFast += 1;
-
-		//animationSpeedPositionSlow += 0.0066;
-		//animationSpeedPositionFast += 0.02;
-
-		//flatSphere.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getScaleMatrix4x4(4, 4, 4), MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(10, -25 + (float)Math.sin(animationSpeedPositionFast) * 10, -60))));
-		//flatCylinder.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(30, -25 + (float)Math.sin(animationSpeedPositionFast) * 10, -60)));
-		//flatCube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getScaleMatrix4x4(4, 4, 4), MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(-20, -25 + (float)Math.sin(animationSpeedPositionFast) * 10, -60))));
+		fastAngle += 1f;
+		angle += 0.005f;
 		
-		//cube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getScaleMatrix4x4(4, 4, 4), MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(-20, -5 + (float)Math.sin(animationSpeedPositionFast) * 10, -60))));
+		float radius = 15;
+		float x = radius * (float) Math.sin(angle);
+		float z = radius * (float) Math.cos(angle);
 		
 		sphere.setTransformationMatrix(
 		    MatrixUtils.multiplyMatrix4x4(
-		    	MatrixUtils.getScaleMatrix4x4(4, 4, 4),
+		    	MatrixUtils.getScaleMatrix4x4(2, 2, 2),
 				MatrixUtils.multiplyMatrix4x4(
-					MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1f, 0), 
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
 					MatrixUtils.getTransalationMatrix4x4(0, -3, -30)
 				)
 			)
@@ -98,67 +98,104 @@ public class JOGLApplication implements GLEventListener
 
 		sphere1.setTransformationMatrix(
 		    MatrixUtils.multiplyMatrix4x4(
-		    	MatrixUtils.getScaleMatrix4x4(4, 4, 4),
+		    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
 				MatrixUtils.multiplyMatrix4x4(
-					MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1f, 0), 
-					MatrixUtils.getTransalationMatrix4x4(13, -3, -35)
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle), -3, radius * (float) Math.cos(angle) - 30)
 				)
 			)
 		);
 		
 		sphere2.setTransformationMatrix(
 		    MatrixUtils.multiplyMatrix4x4(
-		    	MatrixUtils.getScaleMatrix4x4(4, 4, 4),
+	    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
 				MatrixUtils.multiplyMatrix4x4(
-					MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1f, 0), 
-					MatrixUtils.getTransalationMatrix4x4(-13, -3, -25)
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 30), -3, radius * (float) Math.cos(angle + 30) - 30)
 				)
 			)
 		);
 		
 		cone.setTransformationMatrix(
 		    MatrixUtils.multiplyMatrix4x4(
-		    	MatrixUtils.getScaleMatrix4x4(4, 4, 4),
+	    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
 				MatrixUtils.multiplyMatrix4x4(
-					MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1f, 0), 
-					MatrixUtils.getTransalationMatrix4x4(-7, -3, -35)
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 60), -4f, radius * (float) Math.cos(angle + 60) - 30)
 				)
 			)
 		);
 		
 		cone1.setTransformationMatrix(
 		    MatrixUtils.multiplyMatrix4x4(
-		    	MatrixUtils.getScaleMatrix4x4(4, 4, 4),
+	    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
 				MatrixUtils.multiplyMatrix4x4(
-					MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1f, 0), 
-					MatrixUtils.getTransalationMatrix4x4(7, -3, -25)
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 90), -4f, radius * (float) Math.cos(angle + 90) - 30)
 				)
 			)
 		);
 		
+		cube.setTransformationMatrix(
+		    MatrixUtils.multiplyMatrix4x4(
+	    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
+				MatrixUtils.multiplyMatrix4x4(
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 120), -3f, radius * (float) Math.cos(angle + 120) - 30)
+				)
+			)
+		);
+		
+		cube1.setTransformationMatrix(
+		    MatrixUtils.multiplyMatrix4x4(
+		    	MatrixUtils.getScaleMatrix4x4(2, 2, 2),
+				MatrixUtils.multiplyMatrix4x4(
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 150), -3f, radius * (float) Math.cos(angle + 150) - 30)
+				)
+			)
+		);
+		
+		cylinder.setTransformationMatrix(
+		    MatrixUtils.multiplyMatrix4x4(
+	    		MatrixUtils.getScaleMatrix4x4(2, 2, 2),
+				MatrixUtils.multiplyMatrix4x4(
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 180), -3f, radius * (float) Math.cos(angle + 180) - 30)
+				)
+			)
+		);
+		
+		cylinder1.setTransformationMatrix(
+		    MatrixUtils.multiplyMatrix4x4(
+		    	MatrixUtils.getScaleMatrix4x4(2, 2, 2),
+				MatrixUtils.multiplyMatrix4x4(
+					MatrixUtils.getRotationMatrix4x4(fastAngle, 0, 1f, 0), 
+					MatrixUtils.getTransalationMatrix4x4(radius * (float) Math.sin(angle + 210), -3f, radius * (float) Math.cos(angle + 210) - 30)
+				)
+			)
+		);
+	
 		GL4 gl = drawable.getGL().getGL4();
 
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
 
 		light.sendUniforms(currentShader);
 		
-		//flatSphere.draw(gl, currentShader, camera);
-		//flatCylinder.draw(gl, currentShader, camera);
-		//flatCube.draw(gl, currentShader, camera);
-		
-		//cube.draw(gl, currentShader, camera);
-		
 		sphere.draw(gl, currentShader, camera);
+		
 		sphere1.draw(gl, currentShader, camera);
 		sphere2.draw(gl, currentShader, camera);
 		
 		cone.draw(gl, currentShader, camera);
 		cone1.draw(gl, currentShader, camera);
 		
-		//toroid.draw(gl, currentShader, camera);
-		//cylinder.draw(gl, currentShader, camera);
-		//cone.draw(gl, currentShader, camera);
-
+		cube.draw(gl, currentShader, camera);
+		cube1.draw(gl, currentShader, camera);
+		
+		cylinder.draw(gl, currentShader, camera);
+		cylinder1.draw(gl, currentShader, camera);
+		
 		gl.glFlush();
 	}
 
@@ -235,7 +272,7 @@ public class JOGLApplication implements GLEventListener
 		currentShader.use();
 
 		camera = new PerspectiveCamera(60, SCREEN_WIDTH / (float) SCREEN_HEIGHT, 1, 1000);
-		camera.setViewMatrix(MatrixUtils.getLookAtMatrix4x4(0, 0, 0, 0, -10, -80, 0, 1, 0));
+		camera.setViewMatrix(MatrixUtils.getLookAtMatrix4x4(0, 0, 0, 0, 0, -80, 0, 1, 0));
 
 		sphereGeometry = new SphereGeometry(currentShader);
 		
@@ -286,6 +323,47 @@ public class JOGLApplication implements GLEventListener
 		cone1Material.setShineness(256);
 		
 		cone1 = new Mesh(cone1Geometry, cone1Material);
+		
+		cubeGeometry = new CubeGeometry(currentShader);
+		
+		cubeMaterial = new Material();
+		cubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+		cubeMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+		cubeMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		cubeMaterial.setShineness(256);
+		
+		cube = new Mesh(cubeGeometry, cubeMaterial);
+		
+		cube1Geometry = new CubeGeometry(currentShader);
+		
+		cube1Material = new Material();
+		cube1Material.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+		cube1Material.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+		cube1Material.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		cube1Material.setShineness(256);
+		
+		cube1 = new Mesh(cube1Geometry, cube1Material);
+		
+		cylinderGeometry = new CylinderGeometry(currentShader);
+		
+		cylinderMaterial = new Material();
+		cylinderMaterial.setAmbientColor(ColorUtils.create(1, 1, 0, 1));
+		cylinderMaterial.setDiffuseColor(ColorUtils.create(1, 1, 0, 1));
+		cylinderMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		cylinderMaterial.setShineness(256);
+		
+		cylinder = new Mesh(cylinderGeometry, cylinderMaterial);
+		
+		
+		cylinder1Geometry = new CylinderGeometry(currentShader);
+		
+		cylinder1Material = new Material();
+		cylinder1Material.setAmbientColor(ColorUtils.create(1, 1, 0, 1));
+		cylinder1Material.setDiffuseColor(ColorUtils.create(1, 1, 0, 1));
+		cylinder1Material.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+		cylinder1Material.setShineness(256);
+		
+		cylinder1 = new Mesh(cylinder1Geometry, cylinder1Material);
 		
 		/*flatSphereGeometry = new FlatSphereGeometry(currentShader);
 		flatCylinderGeometry = new FlatCylinderGeometry(currentShader);

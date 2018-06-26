@@ -8,8 +8,8 @@ import br.unicamp.feec.graphics.shader.BaseShader;
 
 public class CylinderGeometry extends Geometry
 {
-	private static float CYLINDER_RADIUS = 3.0f;
-	private static float CYLINDER_HEIGHT = 6.0f;
+	private static float CYLINDER_RADIUS = 1.0f;
+	private static float CYLINDER_HEIGHT = 1.0f;
 	
 	private static int CYLINDER_RESOLUTION = 20;
 	
