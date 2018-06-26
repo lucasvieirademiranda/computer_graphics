@@ -8,9 +8,11 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.Animator;
 
 import br.unicamp.feec.app.JOGLApplication;
+import br.unicamp.feec.utils.MatrixUtils;
 
 public class Launcher{
 	public static void main(String[] args) {
+		
 		GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL4));
 
 		GLWindow glWindow = GLWindow.create(caps);

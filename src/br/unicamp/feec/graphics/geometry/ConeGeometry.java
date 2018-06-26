@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.jogamp.opengl.GL4;
 
 import br.unicamp.feec.graphics.shader.BaseShader;
+import br.unicamp.feec.utils.VectorUtils;
 
 public class ConeGeometry extends Geometry
 {

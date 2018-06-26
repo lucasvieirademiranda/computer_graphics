@@ -105,7 +105,7 @@ public class VectorUtils {
 	
 	public static float[] subtract(float[] v1, float[] v2)
 	{
-		return subtract(v1[0], v2[1], v2[2], v2[0], v2[1], v2[2]);
+		return subtract(v1[0], v1[1], v1[2], v2[0], v2[1], v2[2]);
 	}
 	
 	public static float[] normalize(float x, float y, float z)

@@ -35,21 +35,25 @@ public class JOGLApplication implements GLEventListener{
 	
 	DefaultShader phongShader, gouradShader, flatShader, currentShader;
 	Camera camera;
-	Geometry cubeGeometry, sphereGeometry, toroidGeometry, cylinderGeometry, coneGeometry;
-	Material cubeMaterial, sphereMaterial, toroidMaterial, cylinderMaterial, coneMaterial;
-	Mesh cube, sphere, toroid, cylinder, cone;
+	Geometry cubeGeometry, sphereGeometry, toroidGeometry, cylinderGeometry, coneGeometry, flatCubeGeometry, flatCylinderGeometry;
+	Material cubeMaterial, sphereMaterial, toroidMaterial, cylinderMaterial, coneMaterial, flatCubeMaterial, flatCylinderMaterial;
+	Mesh cube, sphere, toroid, cylinder, cone, flatCube, flatCylinder;
 	Light light;
 	float animationSpeedRotationSlow, animationSpeedRotationFast;
 	float animationSpeedPositionSlow, animationSpeedPositionFast;
 
 	@Override
-	public void display(GLAutoDrawable drawable) {
+	public void display(GLAutoDrawable drawable)
+	{
 		animationSpeedRotationSlow += 0.33;
 		animationSpeedRotationFast += 1;
 
 		animationSpeedPositionSlow += 0.0066;
 		animationSpeedPositionFast += 0.02;
 
+		flatCylinder.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(30, -25 + (float)Math.sin(animationSpeedPositionFast) * 10, -60)));
+		flatCube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getScaleMatrix4x4(4, 4, 4), MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(-20, -25 + (float)Math.sin(animationSpeedPositionFast) * 10, -60))));
+		
 		cube.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getScaleMatrix4x4(4, 4, 4), MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationFast, 0, 1, 0), MatrixUtils.getTransalationMatrix4x4(-20, -5 + (float)Math.sin(animationSpeedPositionFast) * 10, -60))));
 		sphere.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationSlow, 0.7071f, 0.7071f, 0), MatrixUtils.getTransalationMatrix4x4(-2 + (float)Math.sin(animationSpeedPositionFast) * 4, -10 + (float)Math.sin(animationSpeedPositionFast) * 2, -60)));
 		toroid.setTransformationMatrix(MatrixUtils.multiplyMatrix4x4(MatrixUtils.getRotationMatrix4x4(animationSpeedRotationSlow, 0.9487f, 0, 0.3162f), MatrixUtils.getTransalationMatrix4x4(18 + (float)Math.sin(animationSpeedPositionSlow) * 4, -10, -60)));
@@ -61,7 +65,10 @@ public class JOGLApplication implements GLEventListener{
 		gl.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT);
 
 		light.sendUniforms(currentShader);
-
+		
+		flatCylinder.draw(gl, currentShader, camera);
+		flatCube.draw(gl, currentShader, camera);
+		
 		cube.draw(gl, currentShader, camera);
 		sphere.draw(gl, currentShader, camera);
 		toroid.draw(gl, currentShader, camera);
@@ -81,6 +88,8 @@ public class JOGLApplication implements GLEventListener{
 		cylinderGeometry.dispose();
 		sphereGeometry.dispose();
 		toroidGeometry.dispose();
+		flatCubeGeometry.dispose();
+		flatCylinderGeometry.dispose();
 		System.exit(0);
 	}
 
@@ -88,7 +97,7 @@ public class JOGLApplication implements GLEventListener{
 	public void init(GLAutoDrawable drawable) {
 		GL4 gl = drawable.getGL().getGL4();
 
-		gl.glClearColor(0, 0, 0, 1);
+		gl.glClearColor(1, 0, 1, 1);
 		gl.glEnable(GL4.GL_DEPTH_TEST);
 		gl.glPolygonMode(GL4.GL_FRONT_AND_BACK, GL4.GL_FILL);
 
@@ -127,12 +136,27 @@ public class JOGLApplication implements GLEventListener{
 		camera = new PerspectiveCamera(45, SCREEN_WIDTH / (float) SCREEN_HEIGHT, 1, 1000);
 		camera.setViewMatrix(MatrixUtils.getLookAtMatrix4x4(0, 0, 0, 0, -10, -80, 0, 1, 0));
 
+		flatCylinderGeometry = new FlatCylinderGeometry(currentShader);
+		flatCubeGeometry = new FlatConeGeometry(currentShader);
+		
 	    cubeGeometry = new CubeGeometry(currentShader);
 	    coneGeometry = new ConeGeometry(currentShader);
 	    cylinderGeometry = new CylinderGeometry(currentShader);
 	    sphereGeometry = new SphereGeometry(currentShader);
 	    toroidGeometry = new ToroidGeometry(currentShader);
 
+	    flatCylinderMaterial = new Material();
+	    flatCylinderMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+	    flatCylinderMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+	    flatCylinderMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+	    flatCylinderMaterial.setShineness(256);
+	    
+	    flatCubeMaterial = new Material();
+	    flatCubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
+	    flatCubeMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
+	    flatCubeMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
+	    flatCubeMaterial.setShineness(256);
+	    
 		cubeMaterial = new Material();
 		cubeMaterial.setAmbientColor(ColorUtils.create(1, 0, 0, 1));
 		cubeMaterial.setDiffuseColor(ColorUtils.create(1, 0, 0, 1));
@@ -163,6 +187,9 @@ public class JOGLApplication implements GLEventListener{
 		toroidMaterial.setSpecularColor(ColorUtils.create(1, 1, 1, 1));
 		toroidMaterial.setShineness(256);
 
+		flatCylinder = new Mesh(flatCylinderGeometry, flatCylinderMaterial);
+		flatCube = new Mesh(flatCubeGeometry, flatCubeMaterial);
+		
 		cube = new Mesh(cubeGeometry, cubeMaterial);
 		cone = new Mesh(coneGeometry, coneMaterial);
 		cylinder = new Mesh(cylinderGeometry, cylinderMaterial);
