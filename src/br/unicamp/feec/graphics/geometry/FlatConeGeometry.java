@@ -50,10 +50,10 @@ public class FlatConeGeometry extends Geometry
 			float[] p2 = VectorUtils.create(radius * x1, y1, radius * z1);
 			float[] p3 = VectorUtils.create(radius * x3, y3, radius * z3);
 			
-			float[] v1 = VectorUtils.normalize(VectorUtils.subtract(p2, p1));
-			float[] v2 = VectorUtils.normalize(VectorUtils.subtract(p3, p1));
+			float[] v1 = VectorUtils.normalize(VectorUtils.subtract(p1, p2));
+			float[] v2 = VectorUtils.normalize(VectorUtils.subtract(p3, p2));
 			
-			float[] normal = VectorUtils.crossProduct(v2, v1);
+			float[] normal = VectorUtils.crossProduct(v1, v2);
 			
 			vertices.add(x2);
 			vertices.add(y2);

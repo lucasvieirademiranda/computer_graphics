@@ -98,7 +98,7 @@ public class MatrixUtils
 		float[][] transpose = new float[4][4];
 		
 		for(int i = 0; i < matrix.length; i++)
-			for(int j = 0; j < matrix[i].length; i++)
+			for(int j = 0; j < matrix[i].length; j++)
 				transpose[j][i] = matrix[i][j];
 		
 		return transpose;

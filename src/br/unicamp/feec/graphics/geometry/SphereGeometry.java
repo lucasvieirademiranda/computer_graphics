@@ -8,10 +8,10 @@ import br.unicamp.feec.graphics.shader.BaseShader;
 
 public class SphereGeometry extends Geometry
 {
-	private static final float RADIUS = 5.0f;
+	private static final float RADIUS = 1.0f;
 	
-	private static final int LATITUDE = 10;
-	private static final int LONGITUDE = 10;
+	private static final int LATITUDE = 50;
+	private static final int LONGITUDE = 50;
 	
 	public SphereGeometry(BaseShader pShader)
 	{
